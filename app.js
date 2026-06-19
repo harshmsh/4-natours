@@ -5,6 +5,15 @@ const app = express();
 
 app.use(express.json()); //here express.json is middleware
 
+app.use((req, res, next) => {
+  console.log('Hello from the middleware');
+  next();
+});
+
+app.use((req, res, next) => {
+  req.requestTime = new Date().toISOString();
+})
+
 // app.get('/', (req, res) => {
 //   res
 //     .status(200)
@@ -20,8 +29,10 @@ const tours = JSON.parse(
 );
 
 const getAllTours = (req, res) => {
+  console.log(req.requestTime)
   res.status(200).json({
     status: 'success',
+    requestedAt: req.requestedTime,
     results: tours.length,
     data: {
       tours,
@@ -111,13 +122,12 @@ const deleteTour = (req, res) => {
 // app.patch('/api/v1/tours/:id', updateTour);
 // app.delete('/api/v1/tours/:id', deleteTour);
 
-app
-  .route('/api/v1/tours')
-  .get(getAllTours)
-  .post(getTour);
+app.route('/api/v1/tours').get(getAllTours).post(createTour);
+
+
 
 app
-  .route('/api/v2/tours/:id')
+  .route('/api/v1/tours/:id')
   .get(getTour)
   .patch(updateTour)
   .delete(deleteTour);
