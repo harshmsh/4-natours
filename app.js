@@ -1,8 +1,11 @@
 const fs = require('fs');
 const express = require('express');
+const morgan = require('morgan');
 
 const app = express();
 
+///1. MIDDLEWARES
+app.use(morgan('dev'));
 app.use(express.json()); //here express.json is middleware
 
 app.use((req, res, next) => {
@@ -12,27 +15,19 @@ app.use((req, res, next) => {
 
 app.use((req, res, next) => {
   req.requestTime = new Date().toISOString();
-})
-
-// app.get('/', (req, res) => {
-//   res
-//     .status(200)
-//     .json({ message: 'Hello from the sever side✌️', app: 'Natours' });
-// });
-
-// app.post('/', (req, res) => {
-//   res.send('You can post to this endpoint..');
-// });
+  next();
+});
 
 const tours = JSON.parse(
   fs.readFileSync(`${__dirname}/dev-data/data/tours-simple.json`),
 );
 
+// 2. ROUTEHANDLERS
 const getAllTours = (req, res) => {
-  console.log(req.requestTime)
+  console.log(req.requestTime);
   res.status(200).json({
     status: 'success',
-    requestedAt: req.requestedTime,
+    requestedAt: req.requestTime,
     results: tours.length,
     data: {
       tours,
@@ -122,9 +117,8 @@ const deleteTour = (req, res) => {
 // app.patch('/api/v1/tours/:id', updateTour);
 // app.delete('/api/v1/tours/:id', deleteTour);
 
+// ROUTES
 app.route('/api/v1/tours').get(getAllTours).post(createTour);
-
-
 
 app
   .route('/api/v1/tours/:id')
