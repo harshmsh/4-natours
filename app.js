@@ -1,19 +1,20 @@
-const fs = require('fs');
+// const fs = require('fs');
 const express = require('express');
 const morgan = require('morgan');
 
-const tourRouter = require('./routes/tourRoutes')
-const userRouter = require('./routes/userRoutes')
+const tourRouter = require('./routes/tourRoutes');
+const userRouter = require('./routes/userRoutes');
 
 const app = express();
 
 ///1. MIDDLEWARES
 
-if(process.env.NODE_ENV === 'development'){
-  app.use(morgan('dev'));}
+if (process.env.NODE_ENV === 'development') {
+  app.use(morgan('dev'));
+}
 
 app.use(express.json()); //here express.json is middleware
-app.use(express.static(`${__dirname}/public`))
+app.use(express.static(`${__dirname}/public`));
 
 app.use((req, res, next) => {
   console.log('Hello from the middleware');
@@ -25,10 +26,7 @@ app.use((req, res, next) => {
   next();
 });
 
-
-
 // 2. ROUTEHANDLERS
-
 
 // app.get('/api/v1/tours', getAllTours);
 // app.get('/api/v2/tours/:id', getTour);
@@ -38,9 +36,7 @@ app.use((req, res, next) => {
 
 // ROUTES
 
-
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
-
 
 module.exports = app;
