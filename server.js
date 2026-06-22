@@ -23,6 +23,24 @@ mongoose
     console.error(err);
   });
 
+const tourSchema = new mongoose.Schema({
+  name: {
+    type: String, 
+    required: [true, ' a tour must have a name']
+    unique: true
+  }
+  rating: {
+    type: Number,
+    default: 4.5
+  } 
+  price: {
+    type: Number,
+    required: [true, ' a tour must have a price']
+  }
+})
+
+const Tour = mongoose.model('Tour', tourschema)
+
 console.log(process.env.NODE_ENV);
 // console.log(process.env.APP_USERNAME);
 
